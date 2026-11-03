@@ -3,141 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بصائر | موسوعة نقد الإلحاد</title>
+    <title>موسوعة بصائر - Basair</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Tajawal', sans-serif; }
-        .arabic-serif { font-family: 'Amiri', serif; }
+        .ui-font { font-family: 'Amiri', serif; }
+        .ui-font { font-family: 'Tajawal', sans-serif; }
+        .highlight { background-color: rgba(217, 119, 6, 0.35); color: inherit; padding: 0 4px; border-radius: 4px; font-weight: bold; }
+        
+        body.dark { background-color: #0c1512; color: #e2e8f0; }
+        body.light { background-color: #f4f6f4; color: #1e293b; }
+        
+        .nuzhat-header { background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); border-bottom: 2px solid #b45309; }
+        .theme-card { background-color: var(--card-bg); border-color: var(--card-border); }
+        
+        body.dark { --card-bg: rgba(13, 27, 22, 0.85); --card-border: #134e4a; --input-bg: #061a14; --input-border: #115e59; }
+        body.light { --card-bg: #ffffff; --card-border: #cbd5e1; --input-bg: #f8fafc; --input-border: #94a3b8; }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col antialiased">
-    <header class="border-b border-zinc-800 bg-zinc-900/90 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                <div>
-                    <h1 class="text-base font-bold text-amber-400">بصائر</h1>
-                    <p class="text-[10px] text-zinc-400">موسوعة نقد الإلحاد</p>
-                </div>
+<body class="dark ui-font transition-all duration-300 min-h-screen flex flex-col" style="--card-bg: rgba(13, 27, 22, 0.85); --card-border: #134e4a;">
+
+    <!-- En-tête Signature Nuzhat -->
+    <header class="nuzhat-header text-white px-4 py-3 sticky top-0 z-50 shadow-lg flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl">📖</span>
+            <div>
+                <h1 id="app-title" class="font-bold text-base text-amber-300">موسوعة بصائر</h1>
+                <p id="app-subtitle" class="text-[10px] text-emerald-200 opacity-80">المنصة الرقمية المتقدمة</p>
             </div>
-            <div class="flex items-center gap-2">
-                <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-zinc-800 text-zinc-200 text-xs px-2.5 py-1.5 rounded-lg border border-zinc-700 focus:outline-none focus:border-amber-500">
-                    <option value="ar">العربية</option>
-                    <option value="en">English</option>
-                    <option value="fr">Français</option>
-                    <option value="es">Español</option>
-                </select>
-            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-emerald-950/80 text-amber-200 border border-emerald-700 rounded-lg px-2 py-1 text-xs focus:outline-none cursor-pointer">
+                <option value="ar">🇲🇦 العربية</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="fr">🇫🇷 Français</option>
+            </select>
+            <button onclick="toggleTheme()" class="p-2 rounded-lg bg-emerald-900 hover:bg-emerald-800 text-xs transition-colors border border-emerald-700 shadow" title="تبديل المظهر">
+                <span id="theme-icon">☀️</span>
+            </button>
         </div>
     </header>
-    <main class="max-w-5xl mx-auto px-4 py-6 flex-1 w-full">
-        <div class="mb-6">
-            <input type="text" id="search-input" oninput="filterSections(this.value)" placeholder="ابحث في أقسام وأبواب الموسوعة..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition-colors">
+
+    <!-- Contenu Principal -->
+    <main class="flex-1 max-w-3xl w-full mx-auto p-4 space-y-4">
+        
+        <!-- Index des 11 Portes -->
+        <div class="theme-card border rounded-xl p-4 shadow-md backdrop-blur">
+            <div class="flex justify-between items-center cursor-pointer mb-2" onclick="toggleIndexPanel()">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-500 text-base">🚪</span>
+                    <h2 id="label-doors" class="text-xs text-amber-400 font-bold">فهرس الأبواب والمحاور (11 باباً)</h2>
+                </div>
+                <span id="index-arrow" class="text-xs text-amber-500 font-bold transition-transform duration-300">▼</span>
+            </div>
+            
+            <div id="doors-grid" class="hidden grid grid-cols-1 gap-2 mt-3 pt-3 border-t border-emerald-900/30 max-h-64 overflow-y-auto">
+                <button onclick="jumpToDoor(0)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب الأول: مدخل دراسة الإلحاد الجديد</span>
+                    <span class="text-amber-400 font-mono text-[10px]">01</span>
+                </button>
+                <button onclick="jumpToDoor(2000)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب الثاني: نقد أصول المادية العلمية</span>
+                    <span class="text-amber-400 font-mono text-[10px]">02</span>
+                </button>
+                <button onclick="jumpToDoor(5000)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب الثالث: شبهات أصل الحياة والكون</span>
+                    <span class="text-amber-400 font-mono text-[10px]">03</span>
+                </button>
+                <button onclick="jumpToDoor(9000)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب الرابع: معضلة الوعي والخلق</span>
+                    <span class="text-amber-400 font-mono text-[10px]">04</span>
+                </button>
+                <button onclick="jumpToDoor(12000)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب الخامس: الأخلاق وقانون الإلزام</span>
+                    <span class="text-amber-400 font-mono text-[10px]">05</span>
+                </button>
+                <button onclick="jumpToDoor(15000)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب السادس: قضايا النبوات والرسالات</span>
+                    <span class="text-amber-400 font-mono text-[10px]">06</span>
+                </button>
+                <button onclick="jumpToDoor(18000)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب السابع: الرد على الشبهات التاريخية</span>
+                    <span class="text-amber-400 font-mono text-[10px]">07</span>
+                </button>
+                <button onclick="jumpToDoor(21000)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب الثامن: حجية القرآن الكريم</span>
+                    <span class="text-amber-400 font-mono text-[10px]">08</span>
+                </button>
+                <button onclick="jumpToDoor(23000)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب التاسع: براهين النبوة المحمدية</span>
+                    <span class="text-amber-400 font-mono text-[10px]">09</span>
+                </button>
+                <button onclick="jumpToDoor(24500)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب العاشر: خلاصات ومنهجية الرد</span>
+                    <span class="text-amber-400 font-mono text-[10px]">10</span>
+                </button>
+                <button onclick="jumpToDoor(25500)" class="text-right text-xs bg-emerald-950/50 hover:bg-emerald-900/80 border border-emerald-800/60 p-2.5 rounded-lg text-zinc-200 transition-colors flex justify-between items-center">
+                    <span>الباب الحادي عشر: الخاتمة والآفاق</span>
+                    <span class="text-amber-400 font-mono text-[10px]">11</span>
+                </button>
+            </div>
         </div>
-        <div id="sections-container" class="space-y-8"></div>
+
+        <!-- Barre de Recherche -->
+        <div class="theme-card border rounded-xl p-3 shadow-md">
+            <div class="flex gap-2">
+                <input type="text" id="search-input" placeholder="ابحث في الموسوعة (كلمة أو رقم)..." oninput="handleSearch(this.value)"
+                    class="flex-1 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500">
+                <button id="btn-clear" onclick="clearSearch()" class="bg-emerald-900 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-xs transition-colors">مسح</button>
+            </div>
+            <div id="search-stats" class="text-xs text-amber-400 mt-2 px-1 font-mono"></div>
+        </div>
+
+        <!-- Navigation / Pagination -->
+        <div class="flex justify-between items-center gap-3 theme-card border p-3 rounded-xl shadow-md">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button id="btn-prev" onclick="changePage(currentPage - 1)" class="bg-emerald-900 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs transition-colors">السابق ←</button>
+                <select id="page-select" onchange="changePage(parseInt(this.value))" class="flex-1 sm:flex-none bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-1.5 text-xs text-center focus:outline-none">
+                </select>
+                <button id="btn-next" onclick="changePage(currentPage + 1)" class="bg-emerald-900 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs transition-colors">→ التالي</button>
+            </div>
+            <div id="total-info" class="text-xs text-amber-500 font-mono"></div>
+        </div>
+
+        <!-- Conteneur de lecture -->
+        <div id="reader-card" class="theme-card border rounded-2xl p-6 space-y-6 shadow-xl">
+            <p class="text-center text-zinc-400">جاري تحميل بيانات الموسوعة...</p>
+        </div>
+
     </main>
-    <footer class="border-t border-zinc-800 py-4 text-center text-xs text-zinc-500">
-        <p>جميع الحقوق محفوظة - المنصة الرقمية الهيكلية</p>
+
+    <!-- Pied de page -->
+    <footer class="border-t border-emerald-900/50 py-4 text-center text-xs text-emerald-600 dark:text-emerald-400/70">
+        <p id="footer-text">موسوعة بصائر الرقمية — قراءة مريحة بدون انترنت</p>
     </footer>
-    <script src="content-i18n.js"></script>
+
     <script>
-        let currentLang = localStorage.getItem('basair_lang') || 'ar';
-        document.getElementById('lang-select').value = currentLang;
+        let allParagraphs = [];
+        let filteredParagraphs = [];
+        let currentPage = 0;
+        const pageSize = 50;
+        let currentQuery = "";
 
-        function renderApp() {
-            const lang = currentLang;
-            const data = siteData[lang];
-            document.getElementById('html-root').lang = lang;
-            document.getElementById('html-root').dir = (lang === 'ar') ? 'rtl' : 'ltr';
-            document.getElementById('search-input').placeholder = data.searchPlaceholder;
-
-            const container = document.getElementById('sections-container');
-            container.innerHTML = '';
-
-            data.sections.forEach(sec => {
-                const secDiv = document.createElement('div');
-                secDiv.className = "bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5";
+        async function init() {
+            try {
+                const res = await fetch('basair-clean-data.json');
+                const data = await res.json();
+                allParagraphs = data.content || [];
+                filteredParagraphs = allParagraphs;
                 
-                let chaptersHtml = '';
-                sec.chapters.forEach(ch => {
-                    chaptersHtml += `
-                        <div class="bg-zinc-900 border border-zinc-800/60 rounded-xl p-4 hover:border-amber-500/50 transition-all cursor-pointer group">
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs font-semibold text-amber-500">${ch.num}</span>
-                                <span class="text-[11px] bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded-md">${ch.count}</span>
-                            </div>
-                            <h3 class="text-base font-bold text-zinc-100 group-hover:text-amber-400 transition-colors">${ch.title}</h3>
-                            <p class="text-xs text-zinc-400 mt-1 leading-relaxed">${ch.desc}</p>
-                        </div>
-                    `;
-                });
+                buildPageSelect();
+                renderPage();
+            } catch (err) {
+                document.getElementById('reader-card').innerHTML = '<p class="text-red-500 text-center">خطأ في تحميل ملف البيانات.</p>';
+            }
+        }
 
-                secDiv.innerHTML = `
-                    <div class="mb-4 border-b border-zinc-800 pb-3">
-                        <h2 class="text-lg font-bold text-amber-400">${sec.sectionTitle}</h2>
-                        <p class="text-xs text-zinc-400 mt-0.5">${sec.description}</p>
-                    </div>
-                    <div class="grid gap-3 sm:grid-cols-2">
-                        ${chaptersHtml}
-                    </div>
-                `;
-                container.appendChild(secDiv);
-            });
+        function buildPageSelect() {
+            const select = document.getElementById('page-select');
+            select.innerHTML = '';
+            const totalPages = Math.ceil(filteredParagraphs.length / pageSize);
+            const lang = document.getElementById('lang-select').value;
+            
+            for (let i = 0; i < totalPages; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = (lang === 'es') ? `Página ${i + 1} de ${totalPages}` : 
+                                  (lang === 'en') ? `Page ${i + 1} of ${totalPages}` : 
+                                  (lang === 'fr') ? `Page ${i + 1} sur ${totalPages}` : 
+                                  `الصفحة ${i + 1} من ${totalPages}`;
+                select.appendChild(opt);
+            }
+            const totalText = (lang === 'es') ? `Total párrafos: ${filteredParagraphs.length}` :
+                              (lang === 'en') ? `Total paragraphs: ${filteredParagraphs.length}` :
+                              (lang === 'fr') ? `Total paragraphes: ${filteredParagraphs.length}` :
+                              `إجمالي الفقرات: ${filteredParagraphs.length}`;
+            document.getElementById('total-info').textContent = totalText;
+        }
+
+        async function translateText(text, targetLang) {
+            if (targetLang === 'ar') return text;
+            try {
+                const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=${targetLang}&dt=t&q=` + encodeURIComponent(text));
+                const json = await res.json();
+                return json[0].map(item => item[0]).join('');
+            } catch (e) {
+                return text; // Fallback en cas de hors-ligne total sans API
+            }
+        }
+
+        async function renderPage() {
+            const card = document.getElementById('reader-card');
+            card.innerHTML = '<p class="text-center text-amber-500 animate-pulse">جاري تحميل وتجهيز الصفحة...</p>';
+
+            const start = currentPage * pageSize;
+            const end = Math.min(start + pageSize, filteredParagraphs.length);
+            const slice = filteredParagraphs.slice(start, end);
+            const lang = document.getElementById('lang-select').value;
+
+            if (slice.length === 0) {
+                card.innerHTML = '<p class="text-center text-zinc-500 py-8">لا توجد نتائج مطابقة للبحث.</p>';
+                return;
+            }
+
+            card.innerHTML = '';
+
+            for (let idx = 0; idx < slice.length; idx++) {
+                let text = slice[idx];
+                const absoluteIndex = start + idx + 1;
+                
+                // Traduction à la volée si la langue n'est pas l'arabe
+                if (lang !== 'ar') {
+                    text = await translateText(text, lang);
+                }
+
+                const p = document.createElement('p');
+                p.className = "leading-loose text-lg ui-font border-b border-emerald-900/20 dark:border-emerald-800/40 pb-4 last:border-b-0";
+                
+                if (currentQuery) {
+                    const regex = new RegExp(`(${currentQuery})`, 'gi');
+                    p.innerHTML = `<span class="text-xs text-amber-500 font-mono ml-2">[${absoluteIndex}]</span> ` + text.replace(regex, '<span class="highlight">$1</span>');
+                } else {
+                    p.innerHTML = `<span class="text-xs text-amber-500/70 font-mono ml-2">[${absoluteIndex}]</span> ` + text;
+                }
+                
+                card.appendChild(p);
+            }
+
+            document.getElementById('page-select').value = currentPage;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function changePage(pageIndex) {
+            const totalPages = Math.ceil(filteredParagraphs.length / pageSize);
+            if (pageIndex < 0 || pageIndex >= totalPages) return;
+            currentPage = pageIndex;
+            renderPage();
+        }
+
+        function toggleIndexPanel() {
+            const grid = document.getElementById('doors-grid');
+            const arrow = document.getElementById('index-arrow');
+            if (grid.classList.contains('hidden')) {
+                grid.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                grid.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function jumpToDoor(paragraphIndex) {
+            const targetPage = Math.floor(parseInt(paragraphIndex) / pageSize);
+            changePage(targetPage);
+            document.getElementById('doors-grid').classList.add('hidden');
+            document.getElementById('index-arrow').style.transform = 'rotate(0deg)';
+        }
+
+        function handleSearch(query) {
+            currentQuery = query.trim();
+            const lang = document.getElementById('lang-select').value;
+            if (!currentQuery) {
+                filteredParagraphs = allParagraphs;
+                document.getElementById('search-stats').textContent = '';
+            } else {
+                filteredParagraphs = allParagraphs.filter(p => p.includes(currentQuery));
+                document.getElementById('search-stats').textContent = (lang === 'es') ? `Se encontraron ${filteredParagraphs.length} resultados para "${currentQuery}"` :
+                                                                      (lang === 'en') ? `Found ${filteredParagraphs.length} results for "${currentQuery}"` :
+                                                                      (lang === 'fr') ? `${filteredParagraphs.length} résultats trouvés pour "${currentQuery}"` :
+                                                                      `تم العثور على ${filteredParagraphs.length} نتيجة مطابقة لـ "${currentQuery}"`;
+            }
+            currentPage = 0;
+            buildPageSelect();
+            renderPage();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            handleSearch('');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                icon.textContent = '🌙';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                icon.textContent = '☀️';
+            }
         }
 
         function changeLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('basair_lang', lang);
-            renderApp();
+            const html = document.getElementById('html-root');
+            html.lang = lang;
+            html.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+            if (lang === 'es') {
+                document.getElementById('app-title').textContent = "Enciclopedia Basair";
+                document.getElementById('app-subtitle').textContent = "Plataforma digital avanzada";
+                document.getElementById('label-doors').textContent = "Índice de puertas y ejes (11 puertas):";
+                document.getElementById('search-input').placeholder = "Buscar en la enciclopedia...";
+                document.getElementById('btn-clear').textContent = "Limpiar";
+                document.getElementById('btn-prev').textContent = "← Anterior";
+                document.getElementById('btn-next').textContent = "Siguiente →";
+                document.getElementById('footer-text').textContent = "Enciclopedia digital Basair — Lectura fluida sin conexión";
+            } else if (lang === 'en') {
+                document.getElementById('app-title').textContent = "Basair Encyclopedia";
+                document.getElementById('app-subtitle').textContent = "Advanced Digital Platform";
+                document.getElementById('label-doors').textContent = "Index of Doors & Chapters (11 doors):";
+                document.getElementById('search-input').placeholder = "Search in encyclopedia...";
+                document.getElementById('btn-clear').textContent = "Clear";
+                document.getElementById('btn-prev').textContent = "← Prev";
+                document.getElementById('btn-next').textContent = "Next →";
+                document.getElementById('footer-text').textContent = "Basair Digital Encyclopedia — Offline comfortable reading";
+            } else if (lang === 'fr') {
+                document.getElementById('app-title').textContent = "Encyclopédie Basair";
+                document.getElementById('app-subtitle').textContent = "Plateforme numérique avancée";
+                document.getElementById('label-doors').textContent = "Index des portes et chapitres (11 portes) :";
+                document.getElementById('search-input').placeholder = "Rechercher dans l'encyclopédie...";
+                document.getElementById('btn-clear').textContent = "Effacer";
+                document.getElementById('btn-prev').textContent = "← Précédent";
+                document.getElementById('btn-next').textContent = "Suivant →";
+                document.getElementById('footer-text').textContent = "Encyclopédie numérique Basair — Lecture hors-ligne confortable";
+            } else {
+                document.getElementById('app-title').textContent = "موسوعة بصائر";
+                document.getElementById('app-subtitle').textContent = "المنصة الرقمية المتقدمة";
+                document.getElementById('label-doors').textContent = "فهرس الأبواب والمحاور (11 باباً)";
+                document.getElementById('search-input').placeholder = "ابحث في الموسوعة (كلمة أو رقم)...";
+                document.getElementById('btn-clear').textContent = "مسح";
+                document.getElementById('btn-prev').textContent = "السابق ←";
+                document.getElementById('btn-next').textContent = "→ التالي";
+                document.getElementById('footer-text').textContent = "موسوعة بصائر الرقمية — قراءة مريحة بدون انترنت";
+            }
+            buildPageSelect();
+            renderPage();
         }
 
-        function filterSections(query) {
-            const lang = currentLang;
-            const data = siteData[lang];
-            const container = document.getElementById('sections-container');
-            container.innerHTML = '';
-
-            data.sections.forEach(sec => {
-                const filteredChapters = sec.chapters.filter(ch => 
-                    ch.title.toLowerCase().includes(query.toLowerCase()) || 
-                    ch.desc.toLowerCase().includes(query.toLowerCase()) ||
-                    sec.sectionTitle.toLowerCase().includes(query.toLowerCase())
-                );
-
-                if (filteredChapters.length > 0) {
-                    const secDiv = document.createElement('div');
-                    secDiv.className = "bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5";
-                    
-                    let chaptersHtml = '';
-                    filteredChapters.forEach(ch => {
-                        chaptersHtml += `
-                            <div class="bg-zinc-900 border border-zinc-800/60 rounded-xl p-4 hover:border-amber-500/50 transition-all cursor-pointer group">
-                                <div class="flex items-center justify-between mb-1">
-                                    <span class="text-xs font-semibold text-amber-500">${ch.num}</span>
-                                    <span class="text-[11px] bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded-md">${ch.count}</span>
-                                </div>
-                                <h3 class="text-base font-bold text-zinc-100 group-hover:text-amber-400 transition-colors">${ch.title}</h3>
-                                <p class="text-xs text-zinc-400 mt-1 leading-relaxed">${ch.desc}</p>
-                            </div>
-                        `;
-                    });
-
-                    secDiv.innerHTML = `
-                        <div class="mb-4 border-b border-zinc-800 pb-3">
-                            <h2 class="text-lg font-bold text-amber-400">${sec.sectionTitle}</h2>
-                            <p class="text-xs text-zinc-400 mt-0.5">${sec.description}</p>
-                        </div>
-                        <div class="grid gap-3 sm:grid-cols-2">
-                            ${chaptersHtml}
-                        </div>
-                    `;
-                    container.appendChild(secDiv);
-                }
-            });
-        }
-
-        renderApp();
+        init();
     </script>
 </body>
 </html>
